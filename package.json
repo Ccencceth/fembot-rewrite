@@ -1,0 +1,19 @@
+{
+  "name": "fembotrewrite",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/bot.js",
+  "scripts": {
+    "test": "node ."
+  },
+  "keywords": [],
+  "author": "Ccencceth",
+  "license": "MIT",
+  "dependencies": {
+    "@discordjs/rest": "^1.7.1",
+    "chalk": "^4.1.2",
+    "discord-api-types": "^0.37.41",
+    "discord.js": "^14.10.2",
+    "dotenv": "^16.0.3"
+  }
+}
