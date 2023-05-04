@@ -11,9 +11,8 @@ module.exports = {
         await command.execute(interaction, client);
       } catch (error) {
         console.error(error);
-        await interaction.reply({
-          content: `Oopsie woopsie! UwU we made a fucky wucky! The code monkeys at our headqwartews awe working vewwy hawd to fix this!`,
-          ephemeral: true,
+        await interaction.channel.send({
+          content: `Oopsie woopsie! UwU we made a fucky wucky! The code monkeys at our headqwartews awe working vewwy hawd to fix this!`
         });
       }
     }
