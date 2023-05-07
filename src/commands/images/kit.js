@@ -9,8 +9,8 @@ module.exports = {
   async execute(interaction, client) {
     const gettingImageEmbed = new EmbedBuilder()
       .setColor(client.color)
-      .setTitle("Getting kit image...")
-    await interaction.reply({ embeds:[gettingImageEmbed] });
+      .setTitle("Getting kit image...");
+    await interaction.reply({ embeds: [gettingImageEmbed] });
 
     https
       .get(catApiUrl, (response) => {

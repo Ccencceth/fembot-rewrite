@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require("discord.js");
+const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
 const https = require("https");
 const randomFoxUrl = "https://randomfox.ca/floof/";
 
@@ -7,7 +7,10 @@ module.exports = {
     .setName("focks")
     .setDescription("foxxin foxer <3"),
   async execute(interaction, client) {
-    await interaction.reply("Getting focks image...");
+    const gettingImageEmbed = new EmbedBuilder()
+      .setColor(client.color)
+      .setTitle("Getting focks image...");
+    await interaction.reply({ embeds: [gettingImageEmbed] });
 
     https
       .get(randomFoxUrl, (response) => {
@@ -18,8 +21,11 @@ module.exports = {
         });
 
         response.on("end", () => {
-          interaction.editReply("Focks");
-          interaction.channel.send(JSON.parse(data).image);
+          const imageEmbed = new EmbedBuilder()
+            .setColor(client.color)
+            .setTitle("Focks")
+            .setImage(JSON.parse(data).image);
+          interaction.editReply({ embeds: [imageEmbed] });
         });
       })
       .on("error", (error) => {
