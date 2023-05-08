@@ -1,9 +1,9 @@
 const { Schema, model } = require("mongoose");
 const anonUserSettings = new Schema({
-  _id: Schema.Types.ObjectId,
-  userId: String,
+  _id: String,
+  defaultAnonServerId: String,
   blockAll: Boolean,
   blockedUsers: [],
 });
 
-module.exports = new model("AnonUserSettings", guildSchema, "anonUserSettings");
+module.exports = new model("AnonUserSettings", anonUserSettings, "anonUserSettings");
