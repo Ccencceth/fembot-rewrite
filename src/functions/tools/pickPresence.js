@@ -46,7 +46,7 @@ module.exports = (client) => {
       {
         type: ActivityType.Streaming,
         text: "u-uuuwaaaa~ OmO",
-        status: "dnd",
+        status: "online",
       },
       {
         type: ActivityType.Playing,
@@ -54,9 +54,19 @@ module.exports = (client) => {
         status: "dnd",
       },
       {
-        type: ActivityType.Competing,
+        type: ActivityType.Playing,
         text: "Programming socks on!! B)",
-        status: "idle",
+        status: "online",
+      },
+      {
+        type: ActivityType.Watching,
+        text: "Strydr stink",
+        status: "online",
+      },
+      {
+        type: ActivityType.Listening,
+        text: "to boys mffgfhg",
+        status: "online",
       },
     ];
     const option = Math.floor(Math.random() * options.length);

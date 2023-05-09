@@ -1,4 +1,8 @@
-const { SlashCommandBuilder } = require("discord.js");
+const {
+  SlashCommandBuilder,
+  StringSelectMenuBuilder,
+  ActionRowBuilder,
+} = require("discord.js");
 const anonUserSettings = require("../../schemas/anonusersettings");
 const mongoose = require("mongoose");
 
@@ -17,12 +21,7 @@ module.exports = {
         .setDescription("Send a message to your selected servers anon channel")
     ),
   async execute(interaction, client) {
-    let command = "incomplete";
-    if (command !== "done") {
-      return;
-    }
-
-    let userProfile = await new anonUserSettings.findOne({
+    let userProfile = await anonUserSettings.findOne({
       _id: interaction.user.id,
     });
 
@@ -35,10 +34,30 @@ module.exports = {
       });
     }
 
-    if (interaction.option.getSubcommand === "setdefault") {
-      userProfile.defaultAnonServerId = interaction.channelId;
-      await userProfile.save().catch(console.error);
-      await interaction.reply("hehe this doesnt do things right");
+    if (interaction.options.getSubcommand() === "setdefault") {
+      const guilds = [];
+      for (const [, guild] of interaction.client.guilds.cache) {
+        await guild.members
+          .fetch(interaction.user)
+          .then(() => guilds.push(guild))
+          .catch((error) => console.log(error));
+      }
+
+      const servers = [];
+      for (let i = 0; i < Object.keys(guilds).length; i++) {
+        servers.push({
+          label: Object.entries(guilds)[i][1].name,
+          value: Object.entries(guilds)[i][1].id,
+        });
+      }
+
+      const row = new ActionRowBuilder().addComponents(
+        new StringSelectMenuBuilder()
+          .setCustomId("selectanonmessageserver")
+          .setPlaceholder("Select a server")
+          .addOptions(servers)
+      );
+      await interaction.reply({ components: [row] });
     }
   },
 };

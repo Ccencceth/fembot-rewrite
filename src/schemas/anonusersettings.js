@@ -6,4 +6,8 @@ const anonUserSettings = new Schema({
   blockedUsers: [],
 });
 
-module.exports = new model("AnonUserSettings", anonUserSettings, "anonUserSettings");
+module.exports = new model(
+  "AnonUserSettings",
+  anonUserSettings,
+  "anonUserSettings"
+);
