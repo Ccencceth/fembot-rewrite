@@ -1,3 +1,5 @@
+// Sam was
+
 require("dotenv").config();
 const { token, databaseToken } = process.env;
 const { connect } = require("mongoose");
