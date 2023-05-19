@@ -19,6 +19,14 @@ module.exports = {
       subcommand
         .setName("send")
         .setDescription("Send a message to your selected servers anon channel")
+        .addStringOption((option) =>
+          option.setName("text").setDescription("Text to send anonymously")
+        )
+        .addAttachmentOption((option) =>
+          option
+            .setName("attachment")
+            .setDescription("Attachment to send anonymously")
+        )
     ),
   async execute(interaction, client) {
     let userProfile = await anonUserSettings.findOne({
@@ -61,6 +69,9 @@ module.exports = {
       );
       await interaction.reply({ components: [row], ephemeral: true });
     } else if (interaction.options.getSubcommand() === "send") {
+      const text = interaction.options.getString("text");
+      const attachment = interaction.options.getAttachment("attachment");
+
       if (userProfile.defaultAnonServerId === "none") {
         interaction.reply({
           content:
@@ -70,7 +81,6 @@ module.exports = {
         return;
       }
 
-      //Check if users selected server has an anonymous channel.
       let guildProfile = await anonGuildSettings.findOne({
         _id: userProfile.defaultAnonServerId,
       });
@@ -87,9 +97,30 @@ module.exports = {
       const anonChannel = await interaction.client.channels.cache.get(
         guildProfile.anonChannelId
       );
-      anonChannel.send("anonymous test!! (u cant actually use this yet btw)");
 
-      interaction.reply({ content: "Message sent", ephemeral: true });
+      await interaction.reply({
+        content: "Anonymous message sending...",
+        ephemeral: true,
+      });
+
+      if (!text && !attachment) {
+        await interaction.editReply("Buddy you need to send something :/");
+        return;
+      }
+
+      if (text) {
+        if (text.includes("@everyone") || text.includes("@here")) {
+          await interaction.editReply("Don't @everyone its annoying");
+          return;
+        }
+        anonChannel.send("Anonymous message: " + text);
+      }
+
+      if (attachment) {
+        anonChannel.send({ files: [{ attachment: attachment.url }] });
+      }
+
+      interaction.editReply("Anonymous message sent!");
     }
   },
 };
