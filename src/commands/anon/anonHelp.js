@@ -8,5 +8,8 @@ module.exports = {
     });
 
     // embed for command explanations :D
+    await interaction.editReply({
+        content: "Blehhh not done yet",
+    })
   },
 };

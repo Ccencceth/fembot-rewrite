@@ -6,8 +6,6 @@ module.exports = {
     name: `selectanonmessageserver`,
   },
   async execute(interaction, client) {
-    console.log(interaction.values);
-
     const message = await interaction.deferReply({
       fetchReply: true,
       ephemeral: true,

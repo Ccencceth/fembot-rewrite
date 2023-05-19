@@ -12,6 +12,7 @@ module.exports = {
     ),
   async execute(interaction) {
     if (interaction.options.getSubcommand() === "goodending") {
+      // Maybe one day it won't be a ChatGPT response
       await interaction.reply(
         `Dear <@233794870727147520>,\n\nI wanted to take a moment to express how much I have enjoyed spending time with you lately. You have become such an important part of my life, and I am grateful for all the amazing memories we have made together.\n\nFrom hiking in the mountains to trying out new restaurants in the city, we have done so many fun things together. I'll never forget the time we went camping and stayed up late by the campfire, roasting marshmallows and telling stories. Or the time we went to that music festival and danced together all night long.\n\nI also cherish the quieter moments we have spent together, like when we sat by the lake and watched the sunset, or when we cooked dinner together and shared stories about our lives. Even just hanging out at home and watching movies or playing games has been so much fun with you.\n\nYour positive energy and adventurous spirit always inspire me to try new things and live life to the fullest. I am grateful for your friendship, and I look forward to all the new adventures we will have together in the future.\n\nThank you for being such an amazing friend, Bill.\n\nSincerely,\n\n${interaction.user.username}`
       );
