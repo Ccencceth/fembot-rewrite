@@ -6,5 +6,7 @@ module.exports = {
     const message = await interaction.deferReply({
       fetchReply: true,
     });
+
+    // embed for command explanations :D
   },
 };

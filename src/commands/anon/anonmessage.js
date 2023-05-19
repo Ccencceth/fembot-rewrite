@@ -32,6 +32,8 @@ module.exports = {
         blockAll: true,
         blockedUsers: [],
       });
+
+      await userProfile.save().catch(console.error);
     }
 
     if (interaction.options.getSubcommand() === "setdefault") {
@@ -57,7 +59,7 @@ module.exports = {
           .setPlaceholder("Select a server")
           .addOptions(servers)
       );
-      await interaction.reply({ components: [row] });
+      await interaction.reply({ components: [row], ephemeral: true });
     }
   },
 };
