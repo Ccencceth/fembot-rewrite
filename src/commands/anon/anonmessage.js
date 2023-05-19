@@ -4,7 +4,7 @@ const {
   ActionRowBuilder,
 } = require("discord.js");
 const anonUserSettings = require("../../schemas/anonusersettings");
-const mongoose = require("mongoose");
+const anonGuildSettings = require("../../schemas/anonguildsettings");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -60,6 +60,36 @@ module.exports = {
           .addOptions(servers)
       );
       await interaction.reply({ components: [row], ephemeral: true });
+    } else if (interaction.options.getSubcommand() === "send") {
+      if (userProfile.defaultAnonServerId === "none") {
+        interaction.reply({
+          content:
+            "You don't have a default anonymous channel set. Please select a server using ```/anonmessage setdefault```",
+          ephemeral: true,
+        });
+        return;
+      }
+
+      //Check if users selected server has an anonymous channel.
+      let guildProfile = await anonGuildSettings.findOne({
+        _id: userProfile.defaultAnonServerId,
+      });
+
+      if (!guildProfile) {
+        interaction.reply({
+          content:
+            "Your selected server does not have an anon messages channel. Please get an admin to use the ```/setanonchannel``` command within this server or select a different server with ```/anonmessage setdefault```",
+          ephemeral: true,
+        });
+        return;
+      }
+
+      const anonChannel = await interaction.client.channels.cache.get(
+        guildProfile.anonChannelId
+      );
+      anonChannel.send("anonymous test!! (u cant actually use this yet btw)");
+
+      interaction.reply({ content: "Message sent", ephemeral: true });
     }
   },
 };

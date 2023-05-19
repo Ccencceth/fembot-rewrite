@@ -1,5 +1,4 @@
 const anonUserSettings = require("../../schemas/anonusersettings");
-const mongoose = require("mongoose");
 
 module.exports = {
   data: {
