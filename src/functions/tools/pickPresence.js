@@ -65,7 +65,7 @@ module.exports = (client) => {
       },
       {
         type: ActivityType.Listening,
-        text: "to boys mffgfhg",
+        text: "tboys mffgfhg",
         status: "online",
       },
       {
@@ -75,7 +75,7 @@ module.exports = (client) => {
       },
       {
         type: ActivityType.Listening,
-        text: "to femboy commits arson ASMR",
+        text: "femboy commits arson ASMR",
         status: "online",
       },
     ];
