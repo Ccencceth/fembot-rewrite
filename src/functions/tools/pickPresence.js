@@ -65,7 +65,7 @@ module.exports = (client) => {
       },
       {
         type: ActivityType.Listening,
-        text: "tboys mffgfhg",
+        text: "boys mffgfhg",
         status: "online",
       },
       {
