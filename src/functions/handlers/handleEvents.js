@@ -21,6 +21,7 @@ module.exports = (client) => {
               client.on(event.name, (...args) =>
                 event.execute(...args, client)
               );
+            console.log(`Event: ${event.name} has passed through the handler.`);
           }
           break;
 
