@@ -11,7 +11,23 @@ module.exports = {
         .setDescription("enable/disable recieving anonymous dms")
     )
     .addSubcommand((subcommand) =>
-      subcommand.setName("send").setDescription("send an anonymous dm")
+      subcommand
+        .setName("send")
+        .setDescription("send an anonymous dm")
+        .addUserOption((option) =>
+          option
+            .setName("user")
+            .setDescription("To whom are you sending this?")
+            .setRequired(true)
+        )
+        .addStringOption((option) =>
+          option.setName("text").setDescription("Text to send anonymously")
+        )
+        .addAttachmentOption((option) =>
+          option
+            .setName("attachment")
+            .setDescription("Attachment to send anonymously")
+        )
     )
     .addSubcommand((subcommand) =>
       subcommand
@@ -40,11 +56,36 @@ module.exports = {
     }
 
     if (interaction.options.getSubcommand() === "send") {
-      await interaction.reply("working on it");
+      await interaction.reply({
+        content: "sending message...",
+        ephemeral: true,
+      });
+
+      const receivingUser = interaction.options.getUser("user");
+      let receivingUserProfile = await anonUserSettings.findOne({
+        _id: receivingUser.id,
+      });
+
+      if (!receivingUserProfile) {
+        receivingUserProfile = await new anonUserSettings({
+          _id: receivingUser.id,
+          defaultAnonServerId: "none",
+          blockAll: true,
+          blockedUsers: [],
+        });
+      }
+
+      if (receivingUserProfile.blockAll) {
+        await interaction.editReply(
+          "This user does not have anonymous dms enabled :P"
+        );
+        return;
+      }
+
       return;
     }
     if (interaction.options.getSubcommand() === "toggle") {
-      await interaction.reply("working on it");
+      await interaction.reply("toggling");
 
       userProfile.blockAll = !userProfile.blockAll;
       userProfile.save().catch(console.error);
