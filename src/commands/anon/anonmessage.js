@@ -114,6 +114,8 @@ module.exports = {
           return;
         }
         anonChannel.send("Anonymous message: " + text);
+      } else {
+        anonChannel.send("Anonymous message: ");
       }
 
       if (attachment) {

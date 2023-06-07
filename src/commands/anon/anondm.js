@@ -76,10 +76,33 @@ module.exports = {
       }
 
       if (receivingUserProfile.blockAll) {
-        await interaction.editReply(
+        interaction.editReply(
           "This user does not have anonymous dms enabled :P"
         );
         return;
+      }
+
+      if (receivingUserProfile.blockedUsers.includes(userProfile._id)) {
+        interaction.editReply("This user has you blocked. bad luck buddy :P");
+        return;
+      }
+
+      const text = interaction.options.getString("text");
+      const attachment = interaction.options.getAttachment("attachment");
+
+      if (!text && !attachment) {
+        interaction.editReply("Buddy you need to send something :/");
+        return;
+      }
+
+      if (text) {
+        receivingUser.send("Anonymous message: " + text);
+      } else {
+        receivingUser.send("Anonymous message:");
+      }
+
+      if (attachment) {
+        receivingUser.send({ files: [{ attachment: attachment.url }] });
       }
 
       return;
