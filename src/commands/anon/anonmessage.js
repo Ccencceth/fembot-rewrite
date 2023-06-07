@@ -9,7 +9,7 @@ const anonGuildSettings = require("../../schemas/anonguildsettings");
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("anonmessage")
-    .setDescription("this doesnt work yet :P")
+    .setDescription("anonymous messaging")
     .addSubcommand((subcommand) =>
       subcommand
         .setName("setdefault")
