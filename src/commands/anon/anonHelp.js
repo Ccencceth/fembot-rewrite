@@ -16,7 +16,8 @@ module.exports = {
         { name: '/setanonchannel', value: 'Sets the channel as the servers anonymous message channel. Only admins can use this command.'},
         { name: '/anonmessage setdefault', value: 'This will give you a dropdown menu of all the servers you share with fembot. Choose the one you wish to send anonymous messages to. You can change this at any time :)'},
         { name: '/anonmessage send', value: 'This allows you to send text and/or a file attachment (video/gif/whatever) anonymously to the selected servers anonymous channel.'},
-        { name: '/anondm', value: 'coming soon!!'},
+        { name: '/anondm toggle', value: 'Allows you to enable/disable anonymous dms. You need to enable this to receive anonymous dms.'},
+        { name: '/anondm send', value: 'Send an anonymous message in a specified users dms. you will need to use this command in a server with both fembot (obviously) and the user you wish to send the dm. Other than that same rules as the "/anonmessage send" command.'}
       )
 
     // embed for command explanations :D
