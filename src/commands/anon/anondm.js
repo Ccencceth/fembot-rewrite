@@ -33,12 +33,24 @@ module.exports = {
       subcommand
         .setName("blockuser")
         .setDescription("block a specific person you HATE from sending anondms")
+        .addUserOption((option) =>
+          option
+            .setName("user")
+            .setDescription("User to block!")
+            .setRequired(true)
+        )
     )
     .addSubcommand((subcommand) =>
       subcommand
         .setName("unblockuser")
         .setDescription(
           "unblock a specific person you LOVE from sending anondms"
+        )
+        .addUserOption((option) =>
+          option
+            .setName("user")
+            .setDescription("User to block!")
+            .setRequired(true)
         )
     ),
   async execute(interaction) {
@@ -74,6 +86,8 @@ module.exports = {
           blockedUsers: [],
         });
       }
+
+      receivingUserProfile.save().catch(console.error);
 
       if (receivingUserProfile.blockAll) {
         interaction.editReply(
@@ -120,12 +134,47 @@ module.exports = {
       }
       return;
     }
+
+    const blockUser = interaction.options.getUser("user");
+
     if (interaction.options.getSubcommand() === "blockuser") {
-      await interaction.reply("working on it");
+      await interaction.reply({
+        content: "blocking " + blockUser.tag,
+        ephemeral: true,
+      });
+
+      if (userProfile.blockedUsers.includes(blockUser.id)) {
+        interaction.editReply("You have already blocked this user");
+        return;
+      }
+
+      userProfile.blockedUsers.push(blockUser.id);
+      userProfile.save().catch(console.error);
+
+      if (blockUser === interaction.user) {
+        interaction.editReply(
+          "idk why youd wanna block yourself but u did it! :P"
+        );
+      } else {
+        interaction.editReply("Successfully blocked " + blockUser.tag);
+      }
+
       return;
     }
     if (interaction.options.getSubcommand() === "unblockuser") {
-      await interaction.reply("working on it");
+      await interaction.reply({ content: "unblocking " + blockUser.tag, ephemeral: true });
+
+      const unblockIndex = userProfile.blockedUsers.indexOf(blockUser.id);
+      if (unblockIndex > -1) {
+        userProfile.blockedUsers.splice(unblockIndex, 1);
+      } else {
+        interaction.editReply("You do not have this user blocked");
+        return;
+      }
+
+      userProfile.save().catch(console.error);
+
+      interaction.editReply("Successfully unblocked " + blockUser.tag);
       return;
     }
   },
