@@ -119,6 +119,8 @@ module.exports = {
         receivingUser.send({ files: [{ attachment: attachment.url }] });
       }
 
+      interaction.editReply("Message sent!!!");
+
       return;
     }
     if (interaction.options.getSubcommand() === "toggle") {
