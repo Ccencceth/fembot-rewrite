@@ -16,6 +16,7 @@ const client = new Client({
 });
 client.commands = new Collection();
 client.commandArray = [];
+client.ononCommandArray = [];
 client.buttons = new Collection();
 client.selectMenus = new Collection();
 client.color = 0xffc0cb;
