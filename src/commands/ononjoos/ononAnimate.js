@@ -10,9 +10,7 @@ module.exports = {
         .setDescription("help list for onon animation challenge commands")
     )
     .addSubcommand((subcommand) =>
-      subcommand
-        .setName("start")
-        .setDescription("begin accepting submissions")
+      subcommand.setName("start").setDescription("begin accepting submissions")
     )
     .addSubcommandGroup((subcommandgroup) =>
       subcommandgroup
@@ -77,13 +75,11 @@ module.exports = {
       fetchReply: true,
     });
 
-    const newMessage = `Pong! \nAPI Latency: ${
-      client.ws.ping
-    }ms\nClient Ping: ${
-      message.createdTimestamp - interaction.createdTimestamp
-    }ms`;
-    await interaction.editReply({
-      content: newMessage,
-    });
+    if (interaction.options.getSubcommand() === "help") {
+      interaction.editReply("helping u rn :P");
+      return;
+    }
+
+    interaction.editReply("command under construction");
   },
 };
