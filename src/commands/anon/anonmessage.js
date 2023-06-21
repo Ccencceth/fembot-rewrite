@@ -29,6 +29,11 @@ module.exports = {
         )
     ),
   async execute(interaction, client) {
+    const message = await interaction.deferReply({
+      fetchReply: true,
+      ephemeral: true,
+    });
+
     let userProfile = await anonUserSettings.findOne({
       _id: interaction.user.id,
     });
@@ -67,13 +72,13 @@ module.exports = {
           .setPlaceholder("Select a server")
           .addOptions(servers)
       );
-      await interaction.reply({ components: [row], ephemeral: true });
+      await interaction.editReply({ components: [row], ephemeral: true });
     } else if (interaction.options.getSubcommand() === "send") {
       const text = interaction.options.getString("text");
       const attachment = interaction.options.getAttachment("attachment");
 
       if (userProfile.defaultAnonServerId === "none") {
-        interaction.reply({
+        interaction.editReply({
           content:
             "You don't have a default anonymous channel set. Please select a server using ```/anonmessage setdefault```",
           ephemeral: true,
@@ -86,7 +91,7 @@ module.exports = {
       });
 
       if (!guildProfile) {
-        interaction.reply({
+        interaction.editReply({
           content:
             "Your selected server does not have an anon messages channel. Please get an admin to use the ```/setanonchannel``` command within this server or select a different server with ```/anonmessage setdefault```",
           ephemeral: true,
@@ -98,7 +103,7 @@ module.exports = {
         guildProfile.anonChannelId
       );
 
-      await interaction.reply({
+      await interaction.editReply({
         content: "Anonymous message sending...",
         ephemeral: true,
       });
