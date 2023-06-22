@@ -113,6 +113,51 @@ module.exports = {
       return;
     }
 
+    if (interaction.options.getSubcommandGroup() === "submit") {
+      interaction.editReply("submitting le submission");
+
+      const animation_title = interaction.options.getString("title");
+      const animation_description =
+        interaction.options.getString("description");
+
+      let animation_submission = await ononAnimationSubmission.findOne({
+        _id: interaction.user.id,
+      });
+
+      if (!animation_submission) {
+        animation_submission = await new ononAnimationSubmission({
+          _id: interaction.user.id,
+          type: "",
+          animation: "",
+          title: animation_title,
+          description: animation_description,
+        });
+      }
+      else {
+        animation_submission.title = animation_title;
+        animation_submission.description = animation_description;
+      }
+
+      if (interaction.options.getSubcommand() === "attachment") {
+        const attachment =
+          interaction.options.getAttachment("attachment");
+
+        animation_submission.type = "attachment";
+        animation_submission.animation = attachment.url;
+      }
+      if (interaction.options.getSubcommand() === "link") {
+        const link = interaction.options.getString("link");
+
+        animation_submission.type = "link";
+        animation_submission.animation = link;
+      }
+
+      animation_submission.save().catch(console.error);
+
+      interaction.editReply(`Successfully submitted animation: ${animation_title}`);
+      return;
+    }
+
     interaction.editReply("command under construction");
   },
 };
