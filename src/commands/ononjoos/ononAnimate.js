@@ -1,4 +1,6 @@
 const { SlashCommandBuilder, PermissionFlagsBits } = require("discord.js");
+const ononAnimationSubmission = require("../../schemas/ononanimationsubmission");
+const ononanimate = require("../../schemas/ononanimate");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -77,6 +79,27 @@ module.exports = {
 
     if (interaction.options.getSubcommand() === "help") {
       interaction.editReply("helping u rn :P");
+      return;
+    }
+
+    let ononAnimateData = await ononanimate.findOne({
+      _id: interaction.guild.id,
+    });
+
+    if (!ononAnimateData) {
+      ononAnimateData = await new ononanimate({
+        _id: interaction.guild.id,
+        inProgress: false,
+      });
+    }
+
+    if (interaction.options.getSubcommand() === "start") {
+      ononAnimateData.inProgress = true;
+
+      await ononAnimateData.save().catch(console.error);
+
+      interaction.editReply("onon animate submissions are now open")
+
       return;
     }
 
