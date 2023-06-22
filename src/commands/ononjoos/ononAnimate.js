@@ -94,11 +94,21 @@ module.exports = {
     }
 
     if (interaction.options.getSubcommand() === "start") {
+      if (ononAnimateData.inProgress) {
+        interaction.editReply("onon animate already in progress :P");
+        return;
+      }
+      if (
+        !interaction.member.permissions.has(PermissionFlagsBits.Administrator)
+      ) {
+        interaction.editReply("u do not have permission to use this command");
+        return;
+      }
       ononAnimateData.inProgress = true;
 
       await ononAnimateData.save().catch(console.error);
 
-      interaction.editReply("onon animate submissions are now open")
+      interaction.editReply("onon animate submissions are now open");
 
       return;
     }
