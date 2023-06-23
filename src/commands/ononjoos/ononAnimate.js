@@ -215,7 +215,9 @@ module.exports = {
     }
 
     if (interaction.options.getSubcommand() === "reveal") {
-      if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator)) {
+      if (
+        !interaction.member.permissions.has(PermissionFlagsBits.Administrator)
+      ) {
         interaction.editReply("nuh uh cant do that you dont have permission");
 
         return;
@@ -224,7 +226,14 @@ module.exports = {
 
       for (const submission in submissions) {
         console.log(submissions[submission]);
+
+        await interaction.editReply("# Le Submissions");
+        await interaction.channel.send(
+          `### ${submissions[submission].title}\nby ${submissions[submission]._id}\n\n${submissions[submission].description}\n${submissions[submission].animation}`
+        );
       }
+
+      return;
     }
 
     interaction.editReply("command under construction");
