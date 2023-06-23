@@ -66,6 +66,35 @@ module.exports = {
                 .setRequired(true)
             )
         )
+        .addSubcommand((subcommand) =>
+          subcommand
+            .setName("another")
+            .setDescription("for testing purposes")
+            .addStringOption((option) =>
+              option
+                .setName("title")
+                .setDescription("name your animation")
+                .setRequired(true)
+            )
+            .addStringOption((option) =>
+              option
+                .setName("description")
+                .setDescription("add a lil description")
+                .setRequired(true)
+            )
+            .addStringOption((option) =>
+              option
+                .setName("link")
+                .setDescription("link to the animation")
+                .setRequired(true)
+            )
+            .addUserOption((option) =>
+              option
+                .setName("user")
+                .setDescription("target of your misdeeds")
+                .setRequired(true)
+            )
+        )
     )
     .addSubcommand((subcommand) =>
       subcommand
@@ -120,27 +149,52 @@ module.exports = {
       const animation_description =
         interaction.options.getString("description");
 
-      let animation_submission = await ononAnimationSubmission.findOne({
-        _id: interaction.user.id,
-      });
+      let animation_submission;
 
-      if (!animation_submission) {
-        animation_submission = await new ononAnimationSubmission({
-          _id: interaction.user.id,
-          type: "",
-          animation: "",
-          title: animation_title,
-          description: animation_description,
+      if (interaction.options.getSubcommand() === "another") {
+        const user = interaction.options.getUser("user");
+        animation_submission = await ononAnimationSubmission.findOne({
+          _id: user.id,
         });
-      }
-      else {
-        animation_submission.title = animation_title;
-        animation_submission.description = animation_description;
+
+        if (!animation_submission) {
+          animation_submission = await new ononAnimationSubmission({
+            _id: user.id,
+            type: "",
+            animation: "",
+            title: animation_title,
+            description: animation_description,
+          });
+        } else {
+          animation_submission.title = animation_title;
+          animation_submission.description = animation_description;
+        }
+
+        const link = interaction.options.getString("link");
+
+        animation_submission.type = "link";
+        animation_submission.animation = link;
+      } else {
+        animation_submission = await ononAnimationSubmission.findOne({
+          _id: interaction.user.id,
+        });
+
+        if (!animation_submission) {
+          animation_submission = await new ononAnimationSubmission({
+            _id: interaction.user.id,
+            type: "",
+            animation: "",
+            title: animation_title,
+            description: animation_description,
+          });
+        } else {
+          animation_submission.title = animation_title;
+          animation_submission.description = animation_description;
+        }
       }
 
       if (interaction.options.getSubcommand() === "attachment") {
-        const attachment =
-          interaction.options.getAttachment("attachment");
+        const attachment = interaction.options.getAttachment("attachment");
 
         animation_submission.type = "attachment";
         animation_submission.animation = attachment.url;
@@ -154,8 +208,15 @@ module.exports = {
 
       animation_submission.save().catch(console.error);
 
-      interaction.editReply(`Successfully submitted animation: ${animation_title}`);
+      interaction.editReply(
+        `Successfully submitted animation: ${animation_title}`
+      );
       return;
+    }
+
+    if (interaction.options.getSubcommand() === "reveal") {
+      const submissions = await ononAnimationSubmission.find({});
+      console.log(submissions);
     }
 
     interaction.editReply("command under construction");
