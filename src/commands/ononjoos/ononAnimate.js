@@ -215,8 +215,16 @@ module.exports = {
     }
 
     if (interaction.options.getSubcommand() === "reveal") {
+      if (!interaction.member.permissions.has(PermissionFlagsBits.Administrator)) {
+        interaction.editReply("nuh uh cant do that you dont have permission");
+
+        return;
+      }
       const submissions = await ononAnimationSubmission.find({});
-      console.log(submissions);
+
+      for (const submission in submissions) {
+        console.log(submissions[submission]);
+      }
     }
 
     interaction.editReply("command under construction");
