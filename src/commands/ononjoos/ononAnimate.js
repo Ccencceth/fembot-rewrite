@@ -70,35 +70,6 @@ module.exports = {
                 .setRequired(true)
             )
         )
-        .addSubcommand((subcommand) =>
-          subcommand
-            .setName("another")
-            .setDescription("for testing purposes")
-            .addStringOption((option) =>
-              option
-                .setName("title")
-                .setDescription("name your animation")
-                .setRequired(true)
-            )
-            .addStringOption((option) =>
-              option
-                .setName("description")
-                .setDescription("add a lil description")
-                .setRequired(true)
-            )
-            .addStringOption((option) =>
-              option
-                .setName("link")
-                .setDescription("link to the animation")
-                .setRequired(true)
-            )
-            .addUserOption((option) =>
-              option
-                .setName("user")
-                .setDescription("target of your misdeeds")
-                .setRequired(true)
-            )
-        )
     )
     .addSubcommand((subcommand) =>
       subcommand
@@ -153,48 +124,21 @@ module.exports = {
       const animation_description =
         interaction.options.getString("description");
 
-      let animation_submission;
+      let animation_submission = await ononAnimationSubmission.findOne({
+        _id: interaction.user.id,
+      });
 
-      if (interaction.options.getSubcommand() === "another") {
-        const user = interaction.options.getUser("user");
-        animation_submission = await ononAnimationSubmission.findOne({
-          _id: user.id,
-        });
-
-        if (!animation_submission) {
-          animation_submission = await new ononAnimationSubmission({
-            _id: user.id,
-            type: "",
-            animation: "",
-            title: animation_title,
-            description: animation_description,
-          });
-        } else {
-          animation_submission.title = animation_title;
-          animation_submission.description = animation_description;
-        }
-
-        const link = interaction.options.getString("link");
-
-        animation_submission.type = "link";
-        animation_submission.animation = link;
-      } else {
-        animation_submission = await ononAnimationSubmission.findOne({
+      if (!animation_submission) {
+        animation_submission = await new ononAnimationSubmission({
           _id: interaction.user.id,
+          type: "",
+          animation: "",
+          title: animation_title,
+          description: animation_description,
         });
-
-        if (!animation_submission) {
-          animation_submission = await new ononAnimationSubmission({
-            _id: interaction.user.id,
-            type: "",
-            animation: "",
-            title: animation_title,
-            description: animation_description,
-          });
-        } else {
-          animation_submission.title = animation_title;
-          animation_submission.description = animation_description;
-        }
+      } else {
+        animation_submission.title = animation_title;
+        animation_submission.description = animation_description;
       }
 
       if (interaction.options.getSubcommand() === "attachment") {
@@ -233,7 +177,9 @@ module.exports = {
       for (const submission in submissions) {
         const submissionEmbed = new EmbedBuilder()
           .setColor(client.color)
-          .setTitle(`${Number(submission) + 1}: ${submissions[submission].title}`)
+          .setTitle(
+            `${Number(submission) + 1}: ${submissions[submission].title}`
+          )
           .setDescription(`by ${submissions[submission]._id}`)
           .addFields({
             name: "Description",
@@ -241,9 +187,7 @@ module.exports = {
           });
 
         await interaction.channel.send({ embeds: [submissionEmbed] });
-        await interaction.channel.send(
-          `${submissions[submission].animation}`
-        );
+        await interaction.channel.send(`${submissions[submission].animation}`);
       }
 
       return;
