@@ -176,20 +176,8 @@ module.exports = {
 
       for (const submission in submissions) {
         const user = await interaction.client.users.fetch(submissions[submission]._id);
-
-        const submissionEmbed = new EmbedBuilder()
-          .setColor(client.color)
-          .setTitle(
-            `${Number(submission) + 1}: ${submissions[submission].title}`
-          )
-          .setDescription(`by ${user.username}`)
-          .addFields({
-            name: "Description",
-            value: submissions[submission].description,
-          });
-
-        await interaction.channel.send({ embeds: [submissionEmbed] });
-        await interaction.channel.send(`${submissions[submission].animation}`);
+        
+        await interaction.channel.send(`# 1: ${submissions[submission].title}\n*by ${user.username}*\n## Description\n${submissions[submission].description}\n${submissions[submission].animation}`);
       }
 
       return;
