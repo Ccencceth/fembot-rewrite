@@ -1,4 +1,8 @@
-const { SlashCommandBuilder, PermissionFlagsBits } = require("discord.js");
+const {
+  SlashCommandBuilder,
+  PermissionFlagsBits,
+  EmbedBuilder,
+} = require("discord.js");
 const ononAnimationSubmission = require("../../schemas/ononanimationsubmission");
 const ononanimate = require("../../schemas/ononanimate");
 
@@ -224,12 +228,21 @@ module.exports = {
       }
       const submissions = await ononAnimationSubmission.find({});
 
-      for (const submission in submissions) {
-        console.log(submissions[submission]);
+      await interaction.editReply("# Submissions");
 
-        await interaction.editReply("# Le Submissions");
+      for (const submission in submissions) {
+        const submissionEmbed = new EmbedBuilder()
+          .setColor(client.color)
+          .setTitle(`${Number(submission) + 1}: ${submissions[submission].title}`)
+          .setDescription(`by ${submissions[submission]._id}`)
+          .addFields({
+            name: "Description",
+            value: submissions[submission].description,
+          });
+
+        await interaction.channel.send({ embeds: [submissionEmbed] });
         await interaction.channel.send(
-          `### ${submissions[submission].title}\nby ${submissions[submission]._id}\n\n${submissions[submission].description}\n${submissions[submission].animation}`
+          `${submissions[submission].animation}`
         );
       }
 
