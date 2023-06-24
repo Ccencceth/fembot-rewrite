@@ -175,12 +175,14 @@ module.exports = {
       await interaction.editReply("# Submissions");
 
       for (const submission in submissions) {
+        const user = await interaction.client.users.fetch(submissions[submission]._id);
+
         const submissionEmbed = new EmbedBuilder()
           .setColor(client.color)
           .setTitle(
             `${Number(submission) + 1}: ${submissions[submission].title}`
           )
-          .setDescription(`by ${submissions[submission]._id}`)
+          .setDescription(`by ${user.username}`)
           .addFields({
             name: "Description",
             value: submissions[submission].description,
