@@ -75,6 +75,9 @@ module.exports = {
       subcommand
         .setName("reveal")
         .setDescription("reveal the animations on the day of finishing")
+    )
+    .addSubcommand((subcommand) =>
+      subcommand.setName("reset").setDescription("delete ononanimate data")
     ),
   async execute(interaction, client) {
     const message = await interaction.deferReply({
@@ -118,6 +121,18 @@ module.exports = {
     }
 
     if (interaction.options.getSubcommandGroup() === "submit") {
+      const ononAnimateData = await ononanimate.findOne({
+        _id: interaction.guild.id,
+      });
+
+      if (!ononAnimateData.inProgress) {
+        interaction.editReply(
+          "You are stupid (no ur not u just cant submit yet)"
+        );
+
+        return;
+      }
+
       interaction.editReply("submitting le submission");
 
       const animation_title = interaction.options.getString("title");
@@ -170,16 +185,61 @@ module.exports = {
 
         return;
       }
+      const ononAnimateData = await ononanimate.findOne({
+        _id: interaction.guild.id,
+      });
+
+      if (!ononAnimateData.inProgress) {
+        interaction.editReply("NOT POSSIBLE (there is nothing to show)");
+
+        return;
+      }
+
       const submissions = await ononAnimationSubmission.find({});
 
       await interaction.editReply("# Submissions");
 
       for (const submission in submissions) {
-        const user = await interaction.client.users.fetch(submissions[submission]._id);
-        
-        await interaction.channel.send(`# 1: ${submissions[submission].title}\n*by ${user.username}*\n## Description\n${submissions[submission].description}\n${submissions[submission].animation}`);
+        const user = await interaction.client.users.fetch(
+          submissions[submission]._id
+        );
+
+        await interaction.channel.send(
+          `# Submission ${Number(submission) + 1}: ${
+            submissions[submission].title
+          }\n*by ${user.username}*\n### Description\n${
+            submissions[submission].description
+          }\n${submissions[submission].animation}`
+        );
       }
 
+      return;
+    }
+
+    if (interaction.options.getSubcommand() === "reset") {
+      if (
+        !interaction.member.permissions.has(PermissionFlagsBits.Administrator)
+      ) {
+        interaction.editReply("YOU CANT YOU ARE NOT ALLOWED BACK OFF");
+
+        return;
+      }
+
+      const ononAnimateData = await ononanimate.findOne({
+        _id: interaction.guild.id,
+      });
+
+      if (!ononAnimateData.inProgress) {
+        interaction.editReply("Onon animate is not in progress");
+
+        return;
+      }
+
+      ononAnimateData.inProgress = false;
+      await ononAnimateData.save().catch(console.error);
+      await ononAnimationSubmission.deleteMany({});
+
+      interaction.editReply("all onon data deleted :P");
       return;
     }
 
