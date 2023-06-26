@@ -80,27 +80,91 @@ module.exports = {
       subcommand.setName("reset").setDescription("delete ononanimate data")
     ),
   async execute(interaction, client) {
-    const message = await interaction.deferReply({
-      fetchReply: true,
-    });
-
     if (interaction.options.getSubcommand() === "help") {
+      const message = await interaction.deferReply({
+        fetchReply: true,
+      });
+
       const helpEmbed = new EmbedBuilder()
-      .setColor(client.color)
-      .setTitle('hewp :3')
-      .setDescription('help!')
-      .addFields(
-        { name: '/ononanimate help', value: 'helping you rn :3'},
-        { name: '/ononanimate start', value: 'Opens up Onon Animation Submissions (admins only)' },
-        { name: '/ononanimate submit attachment', value: 'Submit your animation through discord as a file. Give your animation a title and description as well :3' },
-        { name: '/ononanimate submit link', value: 'Submit your animation as a link (Youtube, Google Drive, Bilibili, etc.) This also requires a title and description :3' },
-        { name: '/ononanimate reveal', value: 'Reveal all the epic and cool animation submissions (admins only)' },
-        { name: '/ononanimate reset', value: 'Suck my dick and balls and delete all the data' },
-      )
+        .setColor(client.color)
+        .setTitle("hewp :3")
+        .setDescription("help!")
+        .addFields(
+          { name: "/ononanimate help", value: "helping you rn :3" },
+          {
+            name: "/ononanimate start",
+            value: "Opens up Onon Animation Submissions (admins only)",
+          },
+          {
+            name: "/ononanimate submit attachment",
+            value:
+              "Submit your animation through discord as a file. Give your animation a title and description as well :3",
+          },
+          {
+            name: "/ononanimate submit link",
+            value:
+              "Submit your animation as a link (Youtube, Google Drive, Bilibili, etc.) This also requires a title and description :3",
+          },
+          {
+            name: "/ononanimate reveal",
+            value:
+              "Reveal all the epic and cool animation submissions (admins only)",
+          },
+          {
+            name: "/ononanimate reset",
+            value: "Suck my dick and balls and delete all the data",
+          }
+        );
 
       interaction.editReply({ embeds: [helpEmbed] });
       return;
     }
+
+    if (interaction.options.getSubcommand() === "reveal") {
+      await interaction.deferReply({ fetchReply: true });
+
+      if (
+        !interaction.member.permissions.has(PermissionFlagsBits.Administrator)
+      ) {
+        interaction.editReply("nuh uh cant do that you dont have permission");
+
+        return;
+      }
+      const ononAnimateData = await ononanimate.findOne({
+        _id: interaction.guild.id,
+      });
+
+      const submissions = await ononAnimationSubmission.find({});
+
+      if (!ononAnimateData.inProgress || !submissions[0]) {
+        interaction.editReply("NOT POSSIBLE (there is nothing to show)");
+
+        return;
+      }
+
+      await interaction.editReply("# Submissions");
+
+      for (const submission in submissions) {
+        const user = await interaction.client.users.fetch(
+          submissions[submission]._id
+        );
+
+        await interaction.channel.send(
+          `# Submission ${Number(submission) + 1}: ${
+            submissions[submission].title
+          }\n*by ${user.username}*\n### Description\n${
+            submissions[submission].description
+          }\n${submissions[submission].animation}`
+        );
+      }
+
+      return;
+    }
+
+    const message = await interaction.deferReply({
+      fetchReply: true,
+      ephemeral: true,
+    });
 
     let ononAnimateData = await ononanimate.findOne({
       _id: interaction.guild.id,
@@ -190,45 +254,6 @@ module.exports = {
       return;
     }
 
-    if (interaction.options.getSubcommand() === "reveal") {
-      if (
-        !interaction.member.permissions.has(PermissionFlagsBits.Administrator)
-      ) {
-        interaction.editReply("nuh uh cant do that you dont have permission");
-
-        return;
-      }
-      const ononAnimateData = await ononanimate.findOne({
-        _id: interaction.guild.id,
-      });
-
-      if (!ononAnimateData.inProgress) {
-        interaction.editReply("NOT POSSIBLE (there is nothing to show)");
-
-        return;
-      }
-
-      const submissions = await ononAnimationSubmission.find({});
-
-      await interaction.editReply("# Submissions");
-
-      for (const submission in submissions) {
-        const user = await interaction.client.users.fetch(
-          submissions[submission]._id
-        );
-
-        await interaction.channel.send(
-          `# Submission ${Number(submission) + 1}: ${
-            submissions[submission].title
-          }\n*by ${user.username}*\n### Description\n${
-            submissions[submission].description
-          }\n${submissions[submission].animation}`
-        );
-      }
-
-      return;
-    }
-
     if (interaction.options.getSubcommand() === "reset") {
       if (
         !interaction.member.permissions.has(PermissionFlagsBits.Administrator)
@@ -255,7 +280,5 @@ module.exports = {
       interaction.editReply("all onon data deleted :P");
       return;
     }
-
-    interaction.editReply("command under construction");
   },
 };

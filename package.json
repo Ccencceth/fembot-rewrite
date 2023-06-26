@@ -4,7 +4,8 @@
   "description": "",
   "main": "src/bot.js",
   "scripts": {
-    "test": "node ."
+    "test": "node .",
+    "testicle": "node ."
   },
   "keywords": [],
   "author": "Ccencceth",
