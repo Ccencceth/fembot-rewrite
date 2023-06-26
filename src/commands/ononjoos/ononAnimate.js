@@ -85,7 +85,20 @@ module.exports = {
     });
 
     if (interaction.options.getSubcommand() === "help") {
-      interaction.editReply("helping u rn :P");
+      const helpEmbed = new EmbedBuilder()
+      .setColor(client.color)
+      .setTitle('hewp :3')
+      .setDescription('help!')
+      .addFields(
+        { name: '/ononanimate help', value: 'helping you rn :3'},
+        { name: '/ononanimate start', value: 'Opens up Onon Animation Submissions (admins only)' },
+        { name: '/ononanimate submit attachment', value: 'Submit your animation through discord as a file. Give your animation a title and description as well :3' },
+        { name: '/ononanimate submit link', value: 'Submit your animation as a link (Youtube, Google Drive, Bilibili, etc.) This also requires a title and description :3' },
+        { name: '/ononanimate reveal', value: 'Reveal all the epic and cool animation submissions (admins only)' },
+        { name: '/ononanimate reset', value: 'Suck my dick and balls and delete all the data' },
+      )
+
+      interaction.editReply({ embeds: [helpEmbed] });
       return;
     }
 
